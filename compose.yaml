@@ -1,0 +1,36 @@
+name: eventlab
+services:
+  api:
+    build: ./backend
+    environment:
+      EVENTLAB_DB: /app/data/eventlab.db
+      EVENTLAB_API_TOKEN: ${EVENTLAB_API_TOKEN:-}
+      EVENTLAB_ORIGINS: ${EVENTLAB_ORIGINS:-http://localhost:8080,http://localhost:5173}
+    volumes:
+      - eventlab-data:/app/data
+    ports:
+      - "127.0.0.1:8000:8000"
+    init: true
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/readyz', timeout=3)"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+  web:
+    build: ./frontend
+    ports:
+      - "127.0.0.1:8080:8080"
+    depends_on:
+      api:
+        condition: service_healthy
+    init: true
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1:8080/"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+volumes:
+  eventlab-data:

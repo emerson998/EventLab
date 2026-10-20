@@ -1,0 +1,26 @@
+# Dependencies and generated output
+.venv/
+node_modules/
+dist/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+*.tsbuildinfo
+coverage/
+htmlcov/
+.coverage
+playwright-report/
+test-results/
+.e2e/
+# Local state and credentials
+.env
+.env.*
+!.env.example
+data/
+*.db
+*.db-wal
+*.db-shm
+*.worker.lock
+.DS_Store
